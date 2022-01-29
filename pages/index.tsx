@@ -52,13 +52,16 @@ function Content() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex"
+      className="flex flex-col"
     >
       <Navbar />
       <Head>
         <title>Kino - Početna</title>
       </Head>
-      <div id="bg" className="login-bg filter brightness-50" />
+      <div id="bg" className="login-bg filter brightness-[25%]" />
+      <div id="content" className="flex flex-col relative mt-1 overflow-auto z-[5]">
+          
+      </div>
     </motion.div>
   );
 }

@@ -4,7 +4,22 @@
 
 @layer components {
   .login-bg {
-    @apply fixed h-screen w-screen bg-gradient-pattern bg-[length:400%_400%] animate-gradient -z-10
+    @apply fixed h-screen w-screen bg-gradient-pattern bg-[length:400%_400%] animate-gradient -z-10;
+  }
+
+  .sidebar-icon {
+    @apply relative flex items-center justify-center
+    h-12 w-12 mt-2 mb-2 mx-auto
+    hover:rounded-xl rounded-3xl
+    transition-all duration-300 ease-linear
+    cursor-pointer shadow-lg
+  }
+
+  .sidebar-tooltip {
+    @apply absolute w-auto p-2 m-2 mt-20 min-w-max my-auto rounded-md shadow-md
+    text-white bg-gray-900
+    text-xs font-bold
+    transition-all duration-300 scale-0 origin-center z-50;
   }
 }
 
