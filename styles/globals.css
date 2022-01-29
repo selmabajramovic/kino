@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .login-bg {
+    @apply fixed h-screen w-screen bg-gradient-pattern bg-[length:400%_400%] animate-gradient -z-10
+  }
+}
+
 html,
 body {
   padding: 0;
