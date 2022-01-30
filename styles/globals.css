@@ -12,14 +12,37 @@
     h-12 w-12 mt-2 mb-2 mx-auto
     hover:rounded-xl rounded-3xl
     transition-all duration-300 ease-linear
-    cursor-pointer shadow-lg
+    cursor-pointer
   }
 
   .sidebar-tooltip {
-    @apply absolute w-auto p-2 m-2 mt-20 min-w-max my-auto rounded-md shadow-md
-    text-white bg-gray-900
+    @apply absolute w-auto p-2 m-2 mt-20 min-w-max my-auto rounded-md shadow-lg
+    text-white bg-silver-chalice-800
     text-xs font-bold
     transition-all duration-300 scale-0 origin-center z-50;
+  }
+
+  .content {
+    @apply flex flex-col relative mt-1 mx-8 overflow-auto z-[5] text-xl font-semibold text-white
+  }
+
+  .modal-overlay {
+    @apply absolute bg-silver-chalice-700 bg-opacity-80 w-full h-full inset-0 z-50
+  }
+
+  .modal-content {
+    @apply ml-24 mr-8 flex justify-center items-center h-screen
+  }
+
+  .modal-dialog {
+    @apply bg-silver-chalice-900 w-1/4 flex flex-col rounded-lg p-4 -ml-20
+  }
+
+  .modal-header {
+    @apply flex flex-row border-b-2 border-[#88244a] pb-2 justify-between
+  }
+  .modal-header > div {
+    @apply flex items-center transition rounded-md duration-100 hover:bg-silver-chalice-600
   }
 }
 

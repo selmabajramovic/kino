@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
+import PageLayout from "../components/PageLayout";
 import Head from "next/head";
 
 export default function Index() {
@@ -46,22 +47,8 @@ export default function Index() {
 
 function Content() {
   return (
-    <motion.div
-      id="home"
-      key="home"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="flex flex-col"
-    >
-      <Navbar />
-      <Head>
-        <title>Kino - Početna</title>
-      </Head>
-      <div id="bg" className="login-bg filter brightness-[25%]" />
-      <div id="content" className="flex flex-col relative mt-1 overflow-auto z-[5]">
-          
-      </div>
-    </motion.div>
+    <PageLayout id="home">
+
+    </PageLayout>
   );
 }
