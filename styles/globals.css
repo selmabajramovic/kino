@@ -41,8 +41,33 @@
   .modal-header {
     @apply flex flex-row border-b-2 border-[#88244a] pb-2 justify-between
   }
+
   .modal-header > div {
     @apply flex items-center transition rounded-md duration-100 hover:bg-silver-chalice-600
+  }
+
+  .modal-body {
+    @apply mt-2 border-b-2 border-[#88244a] text-white pt-4 pb-6
+  }
+
+  .modal-footer {
+    @apply flex flex-row justify-end pt-4 pb-2 space-x-4 dark:text-white
+  }
+
+  .add-button {
+    @apply flex flex-row content-center justify-center bg-gradient-pattern w-1/4 rounded-lg p-2 text-white transition-all duration-200 disabled:brightness-50
+  }
+
+  .danger-button {
+    @apply text-white bg-gradient-to-l from-[#864ba2] to-[#bf3a30] content-center justify-center w-1/4 rounded-md p-1 transition-all duration-200 disabled:brightness-50
+  }
+
+  .neutral-button {
+    @apply text-white bg-gradient-to-l from-[#5e5c5c] to-[#9dc5c3] content-center justify-center w-1/4 rounded-md p-1 transition-all duration-200 disabled:brightness-50
+  }
+
+  .text-input {
+    @apply bg-silver-chalice-800 rounded-md p-1 mt-1 text-silver-chalice-200 placeholder:text-silver-chalice-500
   }
 }
 

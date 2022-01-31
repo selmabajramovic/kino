@@ -7,6 +7,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      dropShadow: {
+        "white-sm": "1px 1px 1px white",
+        "white": "1px 1px 2px white",
+        "black-sm": "1px 1px 1px black",
+        "black": "1px 1px 2px black",
+      },
       colors: {
         'silver-chalice': {  DEFAULT: '#A1A1A1',  '50': '#FDFDFD',  '100': '#F3F3F3',  '200': '#DEDEDE',  '300': '#CACACA',  '400': '#B5B5B5',  '500': '#A1A1A1',  '600': '#858585',  '700': '#696969',  '800': '#4D4D4D',  '900': '#313131'},
       },

@@ -73,10 +73,19 @@ export const Modal: FC<IModalProps> = ({
                   />
                 </div>
               </motion.div>
+              {children}
             </motion.div>
           </motion.div>
         </motion.div>
       ) : null}
     </>
   );
+};
+
+export const ModalBody: FC<{}> = ({ children }) => {
+  return <div className="modal-body">{children}</div>;
+};
+
+export const ModalFooter: FC<{}> = ({ children }) => {
+  return <div className="modal-footer">{children}</div>;
 };
