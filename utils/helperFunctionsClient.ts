@@ -1,5 +1,10 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, storage } from "./firebase";
+
+interface IFetchData {
+  coverURL?: string
+  movieURL?: string
+}
 
 async function fetchAdminData() {
   return new Promise<boolean>(async (resolve, reject) => {

@@ -1,7 +1,7 @@
 import { motion, usePresence } from "framer-motion";
 import { FC, MouseEventHandler } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface IModalProps {
   title: string;
@@ -19,10 +19,16 @@ export const Modal: FC<IModalProps> = ({
     shown: { opacity: 1 },
     notShown: { opacity: 0 },
   };
+  const modalRef = useRef<HTMLDivElement | null>(null)
   const [isElementShown, safeToDelete] = usePresence();
   useEffect(() => {
     !isElementShown && setTimeout(safeToDelete, 1000);
   }, [isElementShown, safeToDelete]);
+  useEffect(() => {
+    if (isShown) {
+      modalRef!.current!.scrollIntoView({behavior: "smooth"})
+    }
+  }, [isShown])
   return (
     <>
       {isShown ? (
@@ -35,6 +41,7 @@ export const Modal: FC<IModalProps> = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
           className="modal-overlay"
+          ref={modalRef}
         >
           <motion.div
             id="modal-content"

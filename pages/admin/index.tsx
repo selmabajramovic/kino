@@ -16,6 +16,7 @@ import Head from "next/head";
 import { Modal, ModalBody, ModalFooter } from "../../components/Modal";
 import { motion } from "framer-motion";
 import User from "../../components/admin/User";
+import Movie from "../../components/admin/Movie";
 
 interface IUser {
   displayName?: string;
@@ -31,13 +32,16 @@ export default function Index() {
   const emailInputRef = useRef<HTMLInputElement | null>(null);
   const emailFormRef = useRef<HTMLDivElement | null>(null);
   const [animate, setAnimate] = useState("");
+  const [animateMovie, setAnimateMovie] = useState("");
   const [idToDelete, setIdToDelete] = useState("");
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   const [adminData, setAdminData] = useState<object[] | undefined>(undefined);
+  const [movieData, setMovieData] = useState<object[] | undefined>(undefined);
   const [deleteAdminModal, setDeleteAdminModal] = useState(false);
   const [addAdminModal, setAddAdminModal] = useState(false);
   const [disabledAddAdmin, setDisabledAddAdmin] = useState(false);
   const [disabledRemoveAdmin, setDisabledRemoveAdmin] = useState(false);
+  const [addMovieModal, setAddMovieModal] = useState(false);
   function showDeleteModalWithId(id: string) {
     setIdToDelete(id);
     setDeleteAdminModal(true);
@@ -92,6 +96,12 @@ export default function Index() {
       .then(() => router.reload())
       .catch((err) => console.log(err));
   }
+  async function handleMovieSubmit(event: SyntheticEvent) {
+    event.preventDefault();
+    // @ts-ignore
+    const fd = new FormData(event.target);
+    const data = Object.fromEntries(fd);
+  }
   useEffect(() => {
     fetchAdminData()
       .then((res) => {
@@ -103,6 +113,9 @@ export default function Index() {
     setCurrentUser(JSON.parse(sessionStorage.getItem("currentUser") || "{}"));
     fetchAdmins()
       .then((data) => setAdminData(data))
+      .catch((err) => console.log(err));
+    fetchMovies()
+      .then((data) => setMovieData(data))
       .catch((err) => console.log(err));
   }, [router]);
   return (
@@ -172,7 +185,49 @@ export default function Index() {
             })}
           </motion.div>
         ) : null}
-        <MovieData />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          key="movies"
+          id="movies"
+          className="flex flex-col mt-10 p-4 bg-silver-chalice-900 bg-opacity-50 rounded-lg"
+        >
+          <h1>Upravljanje filmovima</h1>
+          <button
+            className={`add-button mt-4 ${animateMovie}`}
+            style={{ textShadow: "1px 1px 2px black" }}
+            onClick={() => {
+              setAnimateMovie("animate-click");
+              setAddMovieModal(true);
+            }}
+            onAnimationEnd={() => setAnimateMovie("")}
+          >
+            Dodaj film
+          </button>
+        </motion.div>
+        <motion.div
+          id="movie-data"
+          key="movie-data"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="flex flex-col mt-4 mb-8 p-4 bg-silver-chalice-900 bg-opacity-50 rounded-lg space-y-4"
+        >
+          {movieData !== undefined ? (
+            movieData!.length === 0 ? (
+              <p>Trenutno nema filmova!</p>
+            ) : (
+              movieData!.map((data, idx) => {
+                return (
+                  // @ts-ignore
+                  <Movie id={data.id} data={data.data} index={idx} key={idx} />
+                );
+              })
+            )
+          ) : null}
+        </motion.div>
       </PageLayout>
       <Modal
         title="Brisanje administratora"
@@ -216,6 +271,7 @@ export default function Index() {
             <div id="holder" className="flex flex-col" ref={emailFormRef}>
               <label htmlFor="email">E-mail adresa</label>
               <input
+                required
                 name="email"
                 className="text-input"
                 placeholder="ime.prezime@adresa.domena"
@@ -246,54 +302,46 @@ export default function Index() {
           </ModalFooter>
         </form>
       </Modal>
-    </>
-  );
-}
+      <Modal
+        isShown={addMovieModal}
+        title="Dodaj film"
+        onClose={() => setAddMovieModal(false)}
+      >
+        <form onSubmit={handleMovieSubmit}>
+          <ModalBody>
+            <div id="holder" className="flex flex-col space-y-4">
+              <div id="title" className="flex flex-col">
+                <label htmlFor="title">Naslov filma</label>
+                <input
+                  required
+                  type="text"
+                  name="title"
+                  id="title"
+                  className="text-input"
+                  placeholder="Mission Impossible"
+                />
+              </div>
+              <div id="description" className="flex flex-col">
+                <label htmlFor="description">Opis filma</label>
+                <textarea
+                  rows={4}
+                  required
+                  spellCheck="false"
+                  style={{ resize: "vertical", height: "auto" }}
+                  name="description"
+                  id="description"
+                  className="text-input"
+                  placeholder="Kratki opis filma"
+                />
+              </div>
+              {/* Add other things */}
+            </div>
+          </ModalBody>
+          <ModalFooter>
 
-function MovieData() {
-  useEffect(() => {
-    fetchMovies()
-      .then((data) => setMovieData(data))
-      .catch((err) => console.log(err));
-  }, []);
-  const [animate, setAnimate] = useState("");
-  const [movieData, setMovieData] = useState<object[] | undefined>(undefined);
-  const [addMovieModal, setAddMovieModal] = useState(false);
-  return (
-    <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8 }}
-        key="movies"
-        id="movies"
-        className="flex flex-col mt-10 p-4 bg-silver-chalice-900 bg-opacity-50 rounded-lg"
-      >
-        <h1>Upravljanje filmovima</h1>
-        <button
-          className={`add-button mt-4 ${animate}`}
-          style={{ textShadow: "1px 1px 2px black" }}
-          onClick={() => {
-            setAnimate("animate-click");
-            setAddMovieModal(true);
-          }}
-          onAnimationEnd={() => setAnimate("")}
-        >
-          Dodaj film
-        </button>
-      </motion.div>
-      <motion.div
-        id="movie-data"
-        key="movie-data"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="flex flex-col mt-4 p-4 bg-silver-chalice-900 bg-opacity-50 rounded-lg space-y-4"
-      >
-        {console.log(movieData)}
-      {movieData !== undefined ? movieData!.length === 0 ? <p>Trenutno nema filmova!</p> : null : null}
-      </motion.div>
+          </ModalFooter>
+        </form>
+      </Modal>
     </>
   );
 }
