@@ -42,6 +42,7 @@ export default function Index() {
   const [disabledAddAdmin, setDisabledAddAdmin] = useState(false);
   const [disabledRemoveAdmin, setDisabledRemoveAdmin] = useState(false);
   const [addMovieModal, setAddMovieModal] = useState(false);
+  const [disabledAddMovie, setDisabledAddMovie] = useState(false);
   function showDeleteModalWithId(id: string) {
     setIdToDelete(id);
     setDeleteAdminModal(true);
@@ -101,6 +102,11 @@ export default function Index() {
     // @ts-ignore
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd);
+    // @ts-ignore
+    const dataToSend = { ...data, year: parseInt(data.year) };
+    setDisabledAddMovie(true)
+    // @ts-ignore
+    uploadMovie(dataToSend).then(() => router.reload()).catch(err => console.log(err))
   }
   useEffect(() => {
     fetchAdminData()
@@ -266,7 +272,10 @@ export default function Index() {
         isShown={addAdminModal}
         onClose={() => setAddAdminModal(false)}
       >
-        <form onSubmit={handleAdminSubmit}>
+        <form
+          onSubmit={handleAdminSubmit}
+          className="flex flex-col justify-center content-center my-auto"
+        >
           <ModalBody>
             <div id="holder" className="flex flex-col" ref={emailFormRef}>
               <label htmlFor="email">E-mail adresa</label>
@@ -319,6 +328,7 @@ export default function Index() {
                   id="title"
                   className="text-input"
                   placeholder="Mission Impossible"
+                  disabled={disabledAddMovie}
                 />
               </div>
               <div id="description" className="flex flex-col">
@@ -326,6 +336,7 @@ export default function Index() {
                 <textarea
                   rows={4}
                   required
+                  disabled={disabledAddMovie}
                   spellCheck="false"
                   style={{ resize: "vertical", height: "auto" }}
                   name="description"
@@ -334,11 +345,92 @@ export default function Index() {
                   placeholder="Kratki opis filma"
                 />
               </div>
-              {/* Add other things */}
+              <div id="year" className="flex flex-col">
+                <label htmlFor="year">Godina izdanja</label>
+                <input
+                  type="number"
+                  required
+                  disabled={disabledAddMovie}
+                  min="1000"
+                  max="9999"
+                  name="year"
+                  id="year"
+                  className="text-input"
+                  placeholder="2020"
+                  onChange={(e) => {
+                    if (e.target.value.length > 4) {
+                      e.target.value = e.target.value.substring(0, 4);
+                    }
+                  }}
+                />
+              </div>
+              <div id="trailerUrl" className="flex flex-col">
+                <label htmlFor="trailerUrl">URL za trailer filma</label>
+                <input
+                  required
+                  type="text"
+                  name="trailerUrl"
+                  id="trailerUrl"
+                  disabled={disabledAddMovie}
+                  className="text-input"
+                  placeholder="e.g. YouTube URL"
+                />
+              </div>
+              <div id="imdbUrl" className="flex flex-col">
+                <label htmlFor="imdbUrl">IMDB URL</label>
+                <input
+                  required
+                  type="text"
+                  name="imdbUrl"
+                  disabled={disabledAddMovie}
+                  id="imdbUrl"
+                  className="text-input"
+                  placeholder="https://imdb.com/..."
+                />
+              </div>
+              <div id="coverFile" className="flex flex-col">
+                <label htmlFor="coverFile">Cover file</label>
+                <input
+                  accept="image/*"
+                  required
+                  disabled={disabledAddMovie}
+                  type="file"
+                  name="coverFile"
+                  id="coverFile"
+                  className="text-input"
+                />
+              </div>
+              <div id="movieFile" className="flex flex-col">
+                <label htmlFor="movieFile">Video datoteka</label>
+                <input
+                  accept="video/*"
+                  required
+                  type="file"
+                  disabled={disabledAddMovie}
+                  name="movieFile"
+                  id="movieFile"
+                  className="text-input"
+                />
+              </div>
             </div>
           </ModalBody>
           <ModalFooter>
-
+            <button
+              className="add-button"
+              style={{ textShadow: "1px 1px 2px black" }}
+              type="submit"
+              disabled={disabledAddMovie}
+            >
+              Dodaj
+            </button>
+            <button
+              className="neutral-button"
+              style={{ textShadow: "1px 1px 2px black" }}
+              onClick={() => setAddAdminModal(false)}
+              disabled={disabledAddMovie}
+            >
+              Nazad
+            </button>
           </ModalFooter>
         </form>
       </Modal>

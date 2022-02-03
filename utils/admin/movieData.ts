@@ -67,7 +67,8 @@ async function uploadMovie(data: MovieData) {
                   algoliaIndex
                     .saveObject(algoliaData)
                     .then(() => resolve(true))
-                    .catch(() => reject(false));
+                    .catch((err) => reject(err));
+                    //! TODO: FIX API KEY
                 })
                 .catch(() => reject(false));
             })
