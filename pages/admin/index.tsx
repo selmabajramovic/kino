@@ -17,6 +17,7 @@ import { Modal, ModalBody, ModalFooter } from "../../components/Modal";
 import { motion } from "framer-motion";
 import User from "../../components/admin/User";
 import Movie from "../../components/admin/Movie";
+import { index } from "../../utils/algolia"
 
 interface IUser {
   displayName?: string;

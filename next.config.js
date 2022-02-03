@@ -13,6 +13,7 @@ const nextConfig = {
       "media7.giphy.com",
       "media8.giphy.com",
       "media9.giphy.com",
+      "upload.wikimedia.org",
     ]
   }
 }
