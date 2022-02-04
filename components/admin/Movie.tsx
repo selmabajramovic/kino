@@ -108,7 +108,7 @@ export default function Movie({ index, id, data, handleDelete }: IMovieProps) {
             <iframe
               width="300px"
               height="200px"
-              src="https://www.youtube.com/embed/gNtJ4HdMavo"
+              src={data.trailerUrl!.replace("watch?v=", "embed/")}
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

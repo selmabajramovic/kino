@@ -4,7 +4,9 @@ import { useRouter } from "next/router";
 import { fetchAdminData } from "../utils/helperFunctionsClient";
 import { BsPower } from "react-icons/bs";
 import { MdOutlineManageAccounts } from "react-icons/md";
-import { BiArrowBack } from "react-icons/bi"
+import { BiArrowBack } from "react-icons/bi";
+import algoliasearch from "algoliasearch";
+import { InstantSearch, Hits, connectSearchBox } from "react-instantsearch-dom";
 
 interface IIconProps {
   icon: JSX.Element;
@@ -12,11 +14,40 @@ interface IIconProps {
   onClick?: MouseEventHandler;
 }
 
+interface ISearchProps {
+  currentRefinement: string;
+  isSearchStalle: boolean;
+  refine: Function;
+}
+
+function SearchBar({
+  currentRefinement,
+  isSearchStalle,
+  refine,
+}: ISearchProps) {
+  return (
+    <div id="search" className="flex flex-row">
+      <input
+        className="text-input"
+        type="search"
+        value={currentRefinement}
+        onChange={(event) => refine(event.currentTarget.value)}
+      />
+    </div>
+  );
+}
+
 export default function Navbar() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminPage, setAdminPage] = useState(false);
   const [bgNav, setBgNav] = useState("");
+  const searchClient = algoliasearch(
+    "WWQWXD8XG2",
+    process.env!.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!
+  );
+  // @ts-ignore
+  const ConnectedSearchBar = connectSearchBox(SearchBar);
   useEffect(() => {
     fetchAdminData()
       .then((res) => setIsAdmin(res))
@@ -49,6 +80,18 @@ export default function Navbar() {
         >
           Online kino
         </motion.h1>
+      </motion.div>
+      <motion.div
+        key="search-bar"
+        id="search-bar"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="flex flex-col justify-center content-center"
+      >
+        <InstantSearch searchClient={searchClient} indexName="Filmovi">
+          <ConnectedSearchBar />
+        </InstantSearch>
       </motion.div>
       <motion.div key="navbar-icons" className="flex flex-row space-x-8">
         {adminPage ? (
