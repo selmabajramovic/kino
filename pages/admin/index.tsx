@@ -17,7 +17,7 @@ import { Modal, ModalBody, ModalFooter } from "../../components/Modal";
 import { motion } from "framer-motion";
 import User from "../../components/admin/User";
 import Movie from "../../components/admin/Movie";
-import { index } from "../../utils/algolia"
+import { index } from "../../utils/algolia";
 
 interface IUser {
   displayName?: string;
@@ -44,6 +44,9 @@ export default function Index() {
   const [disabledRemoveAdmin, setDisabledRemoveAdmin] = useState(false);
   const [addMovieModal, setAddMovieModal] = useState(false);
   const [disabledAddMovie, setDisabledAddMovie] = useState(false);
+  const [deleteMovieModal, setDeleteMovieModal] = useState(false);
+  const [deleteMovieId, setDeleteMovieId] = useState("");
+  const [disabledMovieDelete, setDisabledMovieDelete] = useState(false);
   function showDeleteModalWithId(id: string) {
     setIdToDelete(id);
     setDeleteAdminModal(true);
@@ -105,9 +108,15 @@ export default function Index() {
     const data = Object.fromEntries(fd);
     // @ts-ignore
     const dataToSend = { ...data, year: parseInt(data.year) };
-    setDisabledAddMovie(true)
+    setDisabledAddMovie(true);
     // @ts-ignore
-    uploadMovie(dataToSend).then(() => router.reload()).catch(err => console.log(err))
+    uploadMovie(dataToSend)
+      .then(() => router.reload())
+      .catch((err) => console.log(err));
+  }
+  function deleteMovieWithId(id: string) {
+    setDeleteMovieId(id);
+    setDeleteMovieModal(true);
   }
   useEffect(() => {
     fetchAdminData()
@@ -118,13 +127,21 @@ export default function Index() {
       })
       .catch(() => router.push("/"));
     setCurrentUser(JSON.parse(sessionStorage.getItem("currentUser") || "{}"));
-    fetchAdmins()
-      .then((data) => setAdminData(data))
-      .catch((err) => console.log(err));
-    fetchMovies()
-      .then((data) => setMovieData(data))
-      .catch((err) => console.log(err));
   }, [router]);
+  useEffect(() => {
+    async function fetchData() {
+      const admins = await fetchAdmins()
+      setAdminData(admins)
+    }
+    fetchData() 
+  }, [])
+  useEffect(() => {
+    async function fetchData() {
+      const movies = await fetchMovies()
+      setMovieData(movies)
+    }
+    fetchData()
+  }, [])
   return (
     <>
       <PageLayout id="admin">
@@ -228,8 +245,16 @@ export default function Index() {
             ) : (
               movieData!.map((data, idx) => {
                 return (
+                  <Movie
                   // @ts-ignore
-                  <Movie id={data.id} data={data.data} index={idx} key={idx} />
+                    id={data.id}
+                  // @ts-ignore
+                    data={data.data}
+                    index={idx}
+                    key={idx}
+                  // @ts-ignore
+                    handleDelete={() => deleteMovieWithId(data.id)}
+                  />
                 );
               })
             )
@@ -434,6 +459,38 @@ export default function Index() {
             </button>
           </ModalFooter>
         </form>
+      </Modal>
+      <Modal
+        title="Brisanje filma"
+        isShown={deleteMovieModal}
+        onClose={() => setDeleteMovieModal(false)}
+      >
+        <ModalBody>
+          <p>Da li ste sigurni da želite izbrisati film?</p>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            className="danger-button"
+            style={{ textShadow: "1px 1px 2px black" }}
+            disabled={disabledMovieDelete}
+            onClick={() => {
+              setDisabledMovieDelete(true)
+               deleteMovie(deleteMovieId)
+                .then(() => router.reload())
+                .catch((err) => console.log(err));
+            }}
+          >
+            Izbriši
+          </button>
+          <button
+            className="neutral-button"
+            style={{ textShadow: "1px 1px 2px black" }}
+            onClick={() => setDeleteMovieModal(false)}
+            disabled={disabledMovieDelete}
+          >
+            Nazad
+          </button>
+        </ModalFooter>
       </Modal>
     </>
   );

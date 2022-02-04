@@ -1,9 +1,10 @@
 import { Timestamp } from "firebase/firestore";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEventHandler } from "react";
 import { ref, getDownloadURL } from "firebase/storage";
 import { storage } from "../../utils/firebase";
 import Link from "next/link";
+import { AiOutlineClose } from "react-icons/ai";
 
 interface IDataProps {
   title: string;
@@ -20,9 +21,10 @@ interface IMovieProps {
   id: string;
   data: IDataProps;
   index: number;
+  handleDelete: MouseEventHandler<SVGElement>
 }
 
-export default function Movie({ index, id, data }: IMovieProps) {
+export default function Movie({ index, id, data, handleDelete }: IMovieProps) {
   const [movieUrl, setMovieUrl] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   useEffect(() => {
@@ -51,33 +53,26 @@ export default function Movie({ index, id, data }: IMovieProps) {
       exit={{ opacity: 0 }}
       className="flex flex-col space-y-4 justify-center content-center"
     >
-      <div id="index">
+      <div id="index" className="flex flex-row justify-between content-center">
         <p className="font-bold">{index + 1}.</p>
+        <AiOutlineClose
+          size="28"
+          className="text-[#ff1e56] hover:bg-silver-chalice-700 transition duration-100"
+          onClick={handleDelete}
+        />
       </div>
-      <motion.div
+      <div
         id="wrapper"
-        key={`wrapper-${index}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
         className="flex flex-row content-center justify-between"
       >
-        <motion.div
+        <div
           id="cover"
-          key={`cover-${index}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           className="flex"
         >
           <img src={coverUrl} alt="cover" className="transform scale-90" />
-        </motion.div>
-        <motion.div
+        </div>
+        <div
           id="data"
-          key={`data-${index}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           className="flex flex-col space-y-4 justify-center content-center"
         >
           <div id="title" className="flex flex-col space-y-1">
@@ -92,13 +87,9 @@ export default function Movie({ index, id, data }: IMovieProps) {
             <p className="uppercase">Kratki opis</p>
             <p className="font-normal">{data.description}</p>
           </div>
-        </motion.div>
-        <motion.div
+        </div>
+        <div
           id="info"
-          key={`info-${index}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           className="flex flex-col space-y-4 justify-center content-center"
         >
           <div id="imdb" className="flex flex-col space-y-1">
@@ -124,19 +115,15 @@ export default function Movie({ index, id, data }: IMovieProps) {
               allowFullScreen
             />
           </div>
-        </motion.div>
-      </motion.div>
-      <motion.div
+        </div>
+      </div>
+      <div
         id="movieFile"
-        key={`movieFile-${index}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
         className="flex flex-col justify-center content-center my-auto space-y-1 mx-auto"
       >
         <p className="uppercase">Video datoteka</p>
         <video src={movieUrl} height="400px" width="600px" controls />
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
