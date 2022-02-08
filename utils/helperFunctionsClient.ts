@@ -1,10 +1,13 @@
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db, storage } from "./firebase";
-
-interface IFetchData {
-  coverURL?: string
-  movieURL?: string
-}
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  DocumentData,
+  doc,
+  getDoc
+} from "firebase/firestore";
+import { db } from "./firebase";
 
 async function fetchAdminData() {
   return new Promise<boolean>(async (resolve, reject) => {
@@ -27,4 +30,37 @@ async function fetchAdminData() {
   });
 }
 
-export { fetchAdminData }
+async function fetchMovies() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "filmovi"));
+    let data: object[] = [];
+    return new Promise<Array<DocumentData>>((resolve, reject) => {
+      try {
+        querySnapshot.forEach((doc) => {
+          data = [...data, { id: doc.id, data: doc.data() }];
+        });
+        resolve(data);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function fetchMovie(id: string) {
+  return new Promise<DocumentData | undefined>((resolve, reject) => {
+    try {
+      const movieRef = doc(db, "filmovi", id)
+      getDoc(movieRef).then(doc => {
+        const data = doc.data()
+        resolve(data)
+      }).catch(err => reject(err))
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+export { fetchAdminData, fetchMovies, fetchMovie };

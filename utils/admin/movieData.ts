@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { index as algoliaIndex } from "../algolia";
 import lodash from "lodash";
+import { nanoid } from "nanoid"
 
 interface MovieData {
   title: string;
@@ -38,7 +39,7 @@ async function uploadMovie(data: MovieData) {
       const regex: RegExp = /[^\\]*\.(\w+)$/;
       const imageExt = coverFile!.name.match(regex)![1];
       const movieExt = movieFile!.name.match(regex)![1];
-      const newTitle = lodash.kebabCase(title).toLowerCase();
+      const newTitle = `${lodash.kebabCase(title).toLowerCase()}-${nanoid(6).toLowerCase()}`;
       const coverFileRef = ref(
         storage,
         `filmovi/${newTitle}/cover.${imageExt}`
@@ -68,7 +69,6 @@ async function uploadMovie(data: MovieData) {
                     .saveObject(algoliaData)
                     .then(() => resolve(true))
                     .catch((err) => reject(err));
-                    //! TODO: FIX API KEY
                 })
                 .catch(() => reject(false));
             })

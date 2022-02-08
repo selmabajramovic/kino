@@ -41,7 +41,7 @@ export default function Login({ gifURL }: ILoginProps) {
           data-aos="fadeIn"
         >
           <Head>
-            <title>Kino - Prijava</title>
+            <title>Online kino - Prijava</title>
           </Head>
           <div id="background" className="login-bg" />
           <motion.div

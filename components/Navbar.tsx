@@ -6,7 +6,13 @@ import { BsPower } from "react-icons/bs";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { BiArrowBack } from "react-icons/bi";
 import algoliasearch from "algoliasearch";
-import { InstantSearch, Hits, connectSearchBox } from "react-instantsearch-dom";
+import {
+  InstantSearch,
+  connectSearchBox,
+  Highlight,
+  connectHits,
+} from "react-instantsearch-dom";
+import Link from "next/link"
 
 interface IIconProps {
   icon: JSX.Element;
@@ -16,27 +22,65 @@ interface IIconProps {
 
 interface ISearchProps {
   currentRefinement: string;
-  isSearchStalle: boolean;
   refine: Function;
 }
 
-function SearchBar({
-  currentRefinement,
-  isSearchStalle,
-  refine,
-}: ISearchProps) {
+interface IHitsProps {
+  hits: object[];
+  index: number;
+}
+
+function Hits({ hits }: IHitsProps) {
+  const router = useRouter()
   return (
-    <div id="search" className="flex flex-row">
-      <input
-        className="text-input"
-        type="search"
-        value={currentRefinement}
-        onChange={(event) => refine(event.currentTarget.value)}
-      />
+    <div id="hits" className="flex flex-col space-y-2">
+      {hits!.map((hit, idx) => {
+        return (
+          <motion.div
+            id={`hit-${idx}`}
+            key={`hit-${idx}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col w-80 bg-silver-chalice-900 p-2 rounded-lg space-y-1 cursor-pointer"
+            // @ts-ignore
+            onClick={() => router.push(`/filmovi/${hit.objectID}`)}
+          >
+            {/* @ts-ignore */}
+            <p className="text-white font-semibold uppercase">{hit.title}</p>
+            {/* @ts-ignore */}
+            <p className="italic text-white">{hit.year}</p>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
 
+// @ts-ignore
+const ConnectedHits = connectHits(Hits);
+
+function SearchBar({
+  currentRefinement,
+  refine,
+}: ISearchProps) {
+  return (
+    <div id="search" className="flex flex-col">
+      <input
+        className="text-input flex flex-row w-80 placeholder:text-center"
+        placeholder="Pretraga"
+        type="search"
+        value={currentRefinement}
+        onChange={(event) => {
+          refine(event.currentTarget.value);
+        }}
+      />
+      <div className="flex flex-row absolute mt-12">
+        {currentRefinement ? <ConnectedHits /> : null}
+      </div>
+    </div>
+  );
+}
 export default function Navbar() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -48,6 +92,7 @@ export default function Navbar() {
   );
   // @ts-ignore
   const ConnectedSearchBar = connectSearchBox(SearchBar);
+  // @ts-ignore
   useEffect(() => {
     fetchAdminData()
       .then((res) => setIsAdmin(res))
@@ -74,12 +119,14 @@ export default function Navbar() {
       transition={{ duration: 1 }}
     >
       <motion.div key="title" className="flex content-center ml-8">
+        <Link href="/" passHref>
         <motion.h1
           key="title-h1"
-          className="my-auto text-white font-semibold text-xl"
+          className="my-auto text-white font-semibold text-xl cursor-pointer"
         >
           Online kino
         </motion.h1>
+        </Link>
       </motion.div>
       <motion.div
         key="search-bar"

@@ -14,7 +14,7 @@ const PageLayout: FC<IPageProps> = ({ children, id }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col"
+      className="flex flex-col mb-8"
     >
       <Navbar />
       <div id="bg" className="login-bg filter brightness-[25%]" />

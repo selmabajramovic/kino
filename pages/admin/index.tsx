@@ -146,7 +146,7 @@ export default function Index() {
     <>
       <PageLayout id="admin">
         <Head>
-          <title>Kino - Upravljačka ploča</title>
+          <title>Online kino - Upravljačka ploča</title>
         </Head>
         <motion.div
           initial={{ opacity: 0 }}
