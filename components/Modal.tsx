@@ -22,9 +22,6 @@ export const Modal: FC<IModalProps> = ({
   const modalRef = useRef<HTMLDivElement | null>(null)
   const [isElementShown, safeToDelete] = usePresence();
   useEffect(() => {
-    !isElementShown && setTimeout(safeToDelete, 1000);
-  }, [isElementShown, safeToDelete]);
-  useEffect(() => {
     if (isShown) {
       modalRef!.current!.scrollIntoView({behavior: "smooth"})
     }
